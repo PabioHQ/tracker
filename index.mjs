@@ -19,7 +19,7 @@ const awsConfig = new AWS.Config({
   region: process.env.AWS_REGION,
 });
 const client = new ElasticSearch.Client({
-  ...createAwsElasticsearchConnector({ awsConfig }),
+  ...createAwsElasticsearchConnector(awsConfig),
   node: `https://${process.env.AWS_ELASTIC_HOST}`,
 });
 
@@ -73,8 +73,17 @@ polka()
         delete saveObject[key]
     );
 
-    // console.log(saveObject);
     // Save record
+    client.index(
+      {
+        index: "analytics",
+        body: saveObject,
+      },
+      (err, result) => {
+        if (err) console.log("ERROR", err);
+        console.log("Result", result);
+      }
+    );
 
     // Send OK response
     res.end("OK");

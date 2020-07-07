@@ -24,7 +24,14 @@ polka()
       os: userAgentParser.getOS(),
     };
     data.userAgent = userAgentResult;
-    const locationValue = dot.dot(lookup.get("66.6.44.4"));
+    const ip =
+      req.headers["x-forwarded-for"] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      (req.connection.socket ? req.connection.socket.remoteAddress : null);
+    const locationValue = dot.dot(
+      lookup.get(!ip || ip === "::1" ? "66.6.44.4" : ip)
+    );
     Object.keys(locationValue).forEach((key) => {
       if (key.includes(".names.") && !key.includes(".names.en"))
         delete locationValue[key];
@@ -37,7 +44,7 @@ polka()
         (saveObject[key] === undefined || saveObject[key] === null) &&
         delete saveObject[key]
     );
-    console.log(saveObject);
+    // console.log(saveObject);
     res.end("OK");
   })
   .listen(3333, (error) => {

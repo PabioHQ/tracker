@@ -1,8 +1,9 @@
 import polka from "polka";
 
 polka()
-  .get("/", (req, res) => {
-    res.send("OK");
+  .all("/", (req, res) => {
+    console.log(req.body);
+    res.end("OK");
   })
   .listen(3333, (error) => {
     if (error) throw error;

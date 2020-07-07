@@ -2,7 +2,10 @@ import polka from "polka";
 
 polka()
   .all("/", (req, res) => {
-    console.log(req.body);
+    const data = {
+      userAgent: (req.headers["user-agent"] ?? "").substring(0, 1000),
+    };
+    console.log(data);
     res.end("OK");
   })
   .listen(3333, (error) => {

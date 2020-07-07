@@ -25,6 +25,7 @@
     "@elastic/elasticsearch": "^7.8.0",
     "aws-elasticsearch-connector": "^9.0.0",
     "dotenv": "^8.2.0",
-    "polka": "^0.5.2"
+    "polka": "^0.5.2",
+    "ua-parser-js": "^0.7.21"
   }
 }

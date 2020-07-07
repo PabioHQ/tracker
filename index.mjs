@@ -15,7 +15,7 @@ const lookup = geolite2.open("GeoLite2-City", (path) => {
 
 polka()
   .all("/", (req, res) => {
-    const data = {};
+    const data = { ...req.query };
     const userAgent = (req.headers["user-agent"] || "").substring(0, 1000);
     const userAgentParser = new UAParser(userAgent);
     const userAgentResult = {

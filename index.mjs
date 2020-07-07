@@ -6,10 +6,22 @@ import anonymize from "ip-anonymize";
 import maxmind from "maxmind";
 import fs from "fs";
 import dotenv from "dotenv";
+import ElasticSearch from "@elastic/elasticsearch";
 import AWS from "aws-sdk";
+import createAwsElasticsearchConnector from "aws-elasticsearch-connector";
 dotenv.config();
 
 const dot = new Dot("_");
+
+const awsConfig = new AWS.Config({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+const client = new ElasticSearch.Client({
+  ...createAwsElasticsearchConnector({ awsConfig }),
+  node: `https://${process.env.AWS_ELASTIC_HOST}`,
+});
 
 const lookup = geolite2.open("GeoLite2-City", (path) => {
   let lookupBuffer = fs.readFileSync(path);
@@ -63,37 +75,6 @@ polka()
 
     // console.log(saveObject);
     // Save record
-    const endpoint = new AWS.Endpoint(
-      `https://${process.env.AWS_ELASTIC_HOST}`
-    );
-    const request = new AWS.HttpRequest(endpoint, process.env.AWS_REGION);
-    request.method = "POST";
-    request.path += "analytics/_doc/1";
-    request.body = JSON.stringify(saveObject);
-    request.headers.host = process.env.AWS_ELASTIC_HOST;
-    request.headers["Content-Type"] = "application/json";
-    request.headers["Content-Length"] = Buffer.byteLength(request.body);
-    const credentials = new AWS.EnvironmentCredentials("AWS");
-    const signer = new AWS.Signers.V4(request, "es");
-    signer.addAuthorization(credentials, new Date());
-    const client = new AWS.HttpClient();
-    client.handleRequest(
-      request,
-      null,
-      (response) => {
-        console.log(response.statusCode + " " + response.statusMessage);
-        let responseBody = "";
-        response.on("data", (chunk) => {
-          responseBody += chunk;
-        });
-        response.on("end", () => {
-          console.log("Response body: " + responseBody);
-        });
-      },
-      (error) => {
-        console.log("Error: " + error);
-      }
-    );
 
     // Send OK response
     res.end("OK");

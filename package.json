@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/koj-co/tracker/issues"
   },
-  "homepage": "https://github.com/koj-co/tracker#readme"
+  "homepage": "https://github.com/koj-co/tracker#readme",
+  "devDependencies": {
+    "@types/polka": "^0.5.1",
+    "typescript": "^3.9.6"
+  }
 }

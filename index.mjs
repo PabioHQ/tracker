@@ -76,7 +76,6 @@ polka()
     const credentials = new AWS.EnvironmentCredentials("AWS");
     const signer = new AWS.Signers.V4(request, "es");
     signer.addAuthorization(credentials, new Date());
-
     const client = new AWS.HttpClient();
     client.handleRequest(
       request,

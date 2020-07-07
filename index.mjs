@@ -1,10 +1,11 @@
 import polka from "polka";
+import dot from "dot-object";
 import UAParser from "ua-parser-js";
 
 polka()
   .all("/", (req, res) => {
     const data = {};
-    const userAgent = (req.headers["user-agent"] ?? "").substring(0, 1000);
+    const userAgent = (req.headers["user-agent"] || "").substring(0, 1000);
     const userAgentParser = new UAParser(userAgent);
     const userAgentResult = {
       userAgent,
@@ -15,7 +16,13 @@ polka()
       os: userAgentParser.getOS(),
     };
     data.userAgent = userAgentResult;
-    console.log(data);
+    const saveObject = dot.dot(data);
+    Object.keys(saveObject).forEach(
+      (key) =>
+        (saveObject[key] === undefined || saveObject[key] === null) &&
+        delete saveObject[key]
+    );
+    console.log(saveObject);
     res.end("OK");
   })
   .listen(3333, (error) => {

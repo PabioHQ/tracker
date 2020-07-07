@@ -1,8 +1,8 @@
 {
-  "name": "tracker",
+  "name": "koj-tracker",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Analytics tracking server for Koj's website",
+  "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "semantic-release": "semantic-release"

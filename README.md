@@ -27,7 +27,7 @@ The following environment variables are required:
 - `AWS_SECRET_ACCESS_KEY` is the AWS secret key
 - `AWS_REGION` is the AWS region, e.g., "eu-central-1"
 
-Locally, these environment variables are loaded from a `.env`.
+Locally, these environment variables are loaded from a `.env`. Your AWS IAM should have the permission `AmazonESFullAccess` (see [Creating Your First IAM Admin User and Group](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html)).
 
 This repository also uses CI/CD and triggers an endpoint for deployment from the `master` branch. Optionally, you may add the following as repository secrets (see [Creating and storing encrypted secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)):
 

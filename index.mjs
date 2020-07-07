@@ -5,12 +5,19 @@ import geolite2 from "geolite2-redist";
 import anonymize from "ip-anonymize";
 import maxmind from "maxmind";
 import fs from "fs";
+import ES from "@elastic/elasticsearch";
+import dotenv from "dotenv";
+dotenv.config();
 
 const dot = new Dot("_");
 
 const lookup = geolite2.open("GeoLite2-City", (path) => {
   let lookupBuffer = fs.readFileSync(path);
   return new maxmind.Reader(lookupBuffer);
+});
+
+const elastic = new ES.Client({
+  node: process.env.AWS_ELASTIC_HOST,
 });
 
 polka()

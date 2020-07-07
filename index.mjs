@@ -5,8 +5,8 @@ import geolite2 from "geolite2-redist";
 import anonymize from "ip-anonymize";
 import maxmind from "maxmind";
 import fs from "fs";
-import ES from "@elastic/elasticsearch";
 import dotenv from "dotenv";
+import AWS from "aws-sdk";
 dotenv.config();
 
 const dot = new Dot("_");
@@ -16,13 +16,12 @@ const lookup = geolite2.open("GeoLite2-City", (path) => {
   return new maxmind.Reader(lookupBuffer);
 });
 
-const elastic = new ES.Client({
-  node: process.env.AWS_ELASTIC_HOST,
-});
-
 polka()
   .all("/", (req, res) => {
+    // Get data from query and body
     const data = { ...req.query };
+
+    // Get user agent details
     const userAgent = (req.headers["user-agent"] || "").substring(0, 1000);
     const userAgentParser = new UAParser(userAgent);
     const userAgentResult = {
@@ -34,6 +33,8 @@ polka()
       os: userAgentParser.getOS(),
     };
     data.user_agent = userAgentResult;
+
+    // Get geolocation details
     let ip =
       req.headers["x-forwarded-for"] ||
       req.connection.remoteAddress ||
@@ -49,6 +50,8 @@ polka()
       });
       data.location = locationValue;
     } catch (error) {}
+
+    // Prepare object for saving
     const saveObject = JSON.parse(
       JSON.stringify(dot.dot(data)).replace(/\[/g, "_").replace(/\]/g, "")
     );
@@ -57,7 +60,43 @@ polka()
         (saveObject[key] === undefined || saveObject[key] === null) &&
         delete saveObject[key]
     );
-    console.log(saveObject);
+
+    // console.log(saveObject);
+    // Save record
+    const endpoint = new AWS.Endpoint(
+      `https://${process.env.AWS_ELASTIC_HOST}`
+    );
+    const request = new AWS.HttpRequest(endpoint, process.env.AWS_REGION);
+    request.method = "POST";
+    request.path += "analytics/_doc/1";
+    request.body = JSON.stringify(saveObject);
+    request.headers.host = process.env.AWS_ELASTIC_HOST;
+    request.headers["Content-Type"] = "application/json";
+    request.headers["Content-Length"] = Buffer.byteLength(request.body);
+    const credentials = new AWS.EnvironmentCredentials("AWS");
+    const signer = new AWS.Signers.V4(request, "es");
+    signer.addAuthorization(credentials, new Date());
+
+    const client = new AWS.HttpClient();
+    client.handleRequest(
+      request,
+      null,
+      (response) => {
+        console.log(response.statusCode + " " + response.statusMessage);
+        let responseBody = "";
+        response.on("data", (chunk) => {
+          responseBody += chunk;
+        });
+        response.on("end", () => {
+          console.log("Response body: " + responseBody);
+        });
+      },
+      (error) => {
+        console.log("Error: " + error);
+      }
+    );
+
+    // Send OK response
     res.end("OK");
   })
   .listen(3333, (error) => {

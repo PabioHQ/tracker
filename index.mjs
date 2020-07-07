@@ -31,7 +31,7 @@ const lookup = geolite2.open("GeoLite2-City", (path) => {
 polka()
   .all("/", (req, res) => {
     // Get data from query and body
-    const data = { ...req.query };
+    const data = { ...req.query, date: new Date() };
 
     // Get user agent details
     const userAgent = (req.headers["user-agent"] || "").substring(0, 1000);
@@ -74,16 +74,13 @@ polka()
     );
 
     // Save record
-    client.index(
-      {
-        index: "analytics",
+    client
+      .index({
+        index: "analytics-website",
         body: saveObject,
-      },
-      (err, result) => {
-        if (err) console.log("ERROR", err);
-        console.log("Result", result);
-      }
-    );
+      })
+      .then(() => {})
+      .catch((error) => console.log("ERROR", error));
 
     // Send OK response
     res.end("OK");

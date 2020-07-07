@@ -1,6 +1,6 @@
 # 📈 Tracker
 
-This repository contains the tracking server for analytics for our products. It's a single Node.js file, [`index.mjs`](./index.mjs) that runs a [Polka](https://github.com/lukeed/polka) server which sends data to AWS-managed ElasticSearch.
+This repository contains the tracking server for analytics for our products. It's a single Node.js file, [`index.mjs`](./index.mjs) that runs a [Polka](https://github.com/lukeed/polka) server which sends data to AWS-managed ElasticSearch. Apart from provided key-value pairs, it tracks the user's geolocation (from their IP address) and device information (from their user-agent).
 
 ![Node CI](https://github.com/koj-co/tracker/workflows/Node%20CI/badge.svg)
 [![Dependencies](https://img.shields.io/librariesio/release/npm/koj-tracker)](https://libraries.io/npm/@anandchowdhary%2Fkoj-tracker)
@@ -32,6 +32,23 @@ Locally, these environment variables are loaded from a `.env`. Your AWS IAM shou
 This repository also uses CI/CD and triggers an endpoint for deployment from the `master` branch. Optionally, you may add the following as repository secrets (see [Creating and storing encrypted secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)):
 
 - `CI_WEBHOOK`
+
+## ⚡ Benchmark
+
+Using [`wrk`](https://github.com/wg/wrk) on Node.js v14.0.0 and the command `wrk -t4 -c4 -d10s http://localhost:3333`, the following results are obtained:
+
+```
+Running 10s test @ http://localhost:3333
+  4 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.63ms    1.73ms  39.68ms   97.16%
+    Req/Sec   668.25    229.27     1.03k    59.50%
+  26642 requests in 10.02s, 2.57MB read
+Requests/sec:   2658.40
+Transfer/sec:    262.21KB
+```
+
+As visible from the results, this can scale to thousands of requests every second, including doing a GeoIP2 request for the location
 
 ## 📄 License
 

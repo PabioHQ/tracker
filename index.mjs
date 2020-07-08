@@ -8,6 +8,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import ElasticSearch from "@elastic/elasticsearch";
 import AWS from "aws-sdk";
+import parse from "url-parse";
 import createAwsElasticsearchConnector from "aws-elasticsearch-connector";
 dotenv.config();
 
@@ -63,6 +64,17 @@ polka()
       data.location = locationValue;
     } catch (error) {}
 
+    // Update URLs
+    Object.keys(saveObject).forEach((key) => {
+      if (key.endsWith("_url")) {
+        const fullUrl = saveObject[key] || "";
+        if (fullUrl.startsWith("http")) {
+          saveObject[key] = fullUrl.substring(0, 1000);
+          data[`parsed_${key}`] = parse(fullUrl);
+        }
+      }
+    });
+
     // Prepare object for saving
     const saveObject = JSON.parse(
       JSON.stringify(dot.dot(data)).replace(/\[/g, "_").replace(/\]/g, "")
@@ -74,13 +86,14 @@ polka()
     );
 
     // Save record
-    client
-      .index({
-        index: "analytics-website",
-        body: saveObject,
-      })
-      .then(() => {})
-      .catch((error) => console.log("ERROR", error));
+    console.log(saveObject);
+    // client
+    //   .index({
+    //     index: "analytics-website",
+    //     body: saveObject,
+    //   })
+    //   .then(() => {})
+    //   .catch((error) => console.log("ERROR", error));
 
     // Send OK response
     res.end("OK");

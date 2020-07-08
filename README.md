@@ -121,7 +121,6 @@ This repository also uses CI/CD and triggers an endpoint for deployment from the
 Using [`wrk`](https://github.com/wg/wrk) on Node.js v14.0.0 and the command `wrk -t4 -c4 -d10s http://localhost:3333`, the following results are obtained:
 
 ```
-
 Running 10s test @ http://localhost:3333
 4 threads and 4 connections
 Thread Stats Avg Stdev Max +/- Stdev
@@ -130,17 +129,12 @@ Req/Sec 668.25 229.27 1.03k 59.50%
 26642 requests in 10.02s, 2.57MB read
 Requests/sec: 2658.40
 Transfer/sec: 262.21KB
-
 ```
 
-As visible from the results, this can scale to thousands of requests every second, including doing a GeoIP2 request for the location
+As visible from the results, this can scale to thousands of requests every second, including doing a GeoIP2 request for the location.
 
 ## 📄 License
 
 - Code: [MIT](./LICENSE) © [Koj](https://joinkoj.com)
 - "ElasticSearch" is a trademark of Elastic NV
 - "Amazon Web Services" and "AWS" are trademarks of Amazon.com, Inc.
-
-```
-
-```

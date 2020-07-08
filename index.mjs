@@ -65,12 +65,27 @@ polka()
     } catch (error) {}
 
     // Update URLs
-    Object.keys(saveObject).forEach((key) => {
+    Object.keys(data).forEach((key) => {
       if (key.endsWith("_url")) {
-        const fullUrl = saveObject[key] || "";
+        const fullUrl = data[key] || "";
+        delete data[key];
         if (fullUrl.startsWith("http")) {
-          saveObject[key] = fullUrl.substring(0, 1000);
-          data[`parsed_${key}`] = parse(fullUrl);
+          data[key] = { href: fullUrl };
+          try {
+            data[key] = parse(fullUrl);
+          } catch (error) {}
+          if (typeof data[key].pathname === "string") {
+            const pathParts = data[key].pathname.split("/");
+            if (
+              pathParts[1].length === 2 ||
+              (pathParts[1].length === 5 && pathParts[1][2] === "-")
+            ) {
+              data[key].pathname_lang = pathParts[1];
+              data[key].pathname_no_lang = pathParts
+                .join("/")
+                .replace(`${pathParts[1]}/`, "");
+            }
+          }
         }
       }
     });
@@ -81,19 +96,20 @@ polka()
     );
     Object.keys(saveObject).forEach(
       (key) =>
-        (saveObject[key] === undefined || saveObject[key] === null) &&
+        (saveObject[key] === undefined ||
+          saveObject[key] === null ||
+          saveObject[key] === "") &&
         delete saveObject[key]
     );
 
     // Save record
-    console.log(saveObject);
-    // client
-    //   .index({
-    //     index: "analytics-website",
-    //     body: saveObject,
-    //   })
-    //   .then(() => {})
-    //   .catch((error) => console.log("ERROR", error));
+    client
+      .index({
+        index: "analytics-website",
+        body: saveObject,
+      })
+      .then(() => {})
+      .catch((error) => console.log("ERROR", error));
 
     // Send OK response
     res.end("OK");

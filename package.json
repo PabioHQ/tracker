@@ -4,6 +4,7 @@
   "description": "Analytics tracking server for Koj's website",
   "main": "index.mjs",
   "scripts": {
+    "start": "node index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "semantic-release": "semantic-release"
   },

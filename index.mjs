@@ -34,7 +34,10 @@ const lookup = geolite2.open("GeoLite2-City", (path) => {
 
 polka()
   .use(cors(), parser.urlencoded({ extended: true }), parser.json())
-  .all("/", (req, res) => {
+  .get("/", (req, res) => {
+    res.end("/POST");
+  })
+  .post("/", (req, res) => {
     // Get data from query and body
     const data = { ...req.query, date: new Date() };
 

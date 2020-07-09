@@ -8,6 +8,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import ElasticSearch from "@elastic/elasticsearch";
 import AWS from "aws-sdk";
+import { json, urlencoded } from "body-parser";
 import parse from "url-parse";
 import createAwsElasticsearchConnector from "aws-elasticsearch-connector";
 dotenv.config();
@@ -31,6 +32,7 @@ const lookup = geolite2.open("GeoLite2-City", (path) => {
 });
 
 polka()
+  .use(cors(), urlencoded(), json())
   .all("/", (req, res) => {
     // Get data from query and body
     const data = { ...req.query, date: new Date() };

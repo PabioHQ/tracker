@@ -13,6 +13,7 @@ import createAwsElasticsearchConnector from "aws-elasticsearch-connector";
 dotenv.config();
 
 const dot = new Dot("_");
+const PORT = process.env.PORT || 80;
 
 const awsConfig = new AWS.Config({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -114,7 +115,7 @@ polka()
     // Send OK response
     res.end("OK");
   })
-  .listen(3333, (error) => {
+  .listen(PORT, (error) => {
     if (error) throw error;
-    console.log(`> Running on localhost:3333`);
+    console.log(`> Running on localhost:${PORT}`);
   });

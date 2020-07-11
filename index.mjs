@@ -39,7 +39,7 @@ polka()
   })
   .post("/", (req, res) => {
     // Get data from query and body
-    const data = { ...req.query, date: new Date() };
+    const data = { ...req.query, ...req.body, date: new Date() };
 
     // Get user agent details
     const userAgent = (req.headers["user-agent"] || "").substring(0, 1000);

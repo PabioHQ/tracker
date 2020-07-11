@@ -73,7 +73,7 @@ polka()
 
     // Update URLs
     Object.keys(data).forEach((key) => {
-      if (key.endsWith("_url")) {
+      if (key.endsWith("_url") && data[key]) {
         const fullUrl = data[key] || "";
         delete data[key];
         if (fullUrl.startsWith("http")) {

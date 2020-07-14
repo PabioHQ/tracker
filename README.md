@@ -100,6 +100,7 @@ Any URLs (with keys ending with `_url`) are also parsed. You even get details ab
   "page_url_slashes": true"
 }
 ```
+When URLs have any query params (like UTM ones), these are also sent in the body. However, this is done on the frontend, because they're also retained in the browser's storage. The same goes for the referrer URL, which is also parsed and stored.
 
 ## ⚙️ Configuration
 

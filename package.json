@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.8.0",
+    "@polka/send-type": "^0.5.2",
     "aws-elasticsearch-connector": "^9.0.0",
     "aws-sdk": "^2.710.0",
     "body-parser": "^1.19.0",

@@ -1,4 +1,5 @@
 import polka from "polka";
+import send from "@polka/send-type";
 import Dot from "dot-object";
 import UAParser from "ua-parser-js";
 import geolite2 from "geolite2-redist";
@@ -119,7 +120,7 @@ polka()
       .catch((error) => console.log("ERROR", error));
 
     // Send OK response
-    res.end("OK");
+    return send(res, 201, data.location);
   })
   .listen(PORT, (error) => {
     if (error) throw error;

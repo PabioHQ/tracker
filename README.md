@@ -138,13 +138,13 @@ As visible from the results, this can scale to thousands of requests every secon
 
 ## 📄 License
 
-- Code: [MIT](./LICENSE) © [Koj](https://joinkoj.com)
+- Code: [MIT](./LICENSE) © [Koj](https://koj.co)
 - "ElasticSearch" is a trademark of Elastic NV
 - "Amazon Web Services" and "AWS" are trademarks of Amazon.com, Inc.
 
 <p align="center">
   <a href="https://koj.co">
-    <img width="44" alt="Koj" src="https://kojcdn.com/v1593890002/website-v2/logo_mcxuwq.svg">
+    <img width="44" alt="Koj" src="https://kojcdn.com/v1598284251/website-v2/koj-github-footer_m089ze.svg">
   </a>
 </p>
 <p align="center">
